@@ -41,4 +41,3 @@ Lancez un conteneur MySQL en utilisant le volume `mysql_exercice` :
 3. **Se connecter à la base de données `school`** :
 
 4. **Vérifier que les données sont toujours présentes** :
-images
