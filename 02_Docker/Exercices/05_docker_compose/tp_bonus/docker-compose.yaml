@@ -1,0 +1,61 @@
+services:
+  # Service Flask (Python)
+  flask-app:
+    build: ./vote 
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - redis  
+  
+  # Service Node.js
+  node-app:
+    build: ./result 
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - postgres 
+
+  # Service Worker (C# .NET)
+  worker-app:
+    build: ./worker 
+    networks:
+      - app-network
+    depends_on:
+      - redis 
+
+  # Service Redis
+  redis:
+    image: redis:5.0-alpine3.10
+    networks:
+      - app-network
+    volumes:
+      - redis-data:/data  # Persist data in a volume
+    expose:
+      - "6379"  # Port interne de Redis, accessible par les autres services
+  
+  # Service PostgreSQL
+  postgres:
+    image: postgres:9.4
+    environment:
+      POSTGRES_USER: exampleuser
+      POSTGRES_PASSWORD: examplepassword
+      POSTGRES_DB: exampledb
+    networks:
+      - app-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # Persist data in a volume
+    expose:
+      - "5432"  # Port interne de PostgreSQL, accessible par les autres services
+
+# Définition des réseaux et des volumes
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  postgres-data:
