@@ -5,10 +5,13 @@ services:
     container_name: db_mysql
     environment: 
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: default
     ports: 
       - "3306:3306"
     volumes: 
       - local_mysqldata:/var/lib/mysql
+    networks:
+      - mysql-phpmyadmin
 
   phpmyadmin:
     depends_on:
@@ -20,10 +23,14 @@ services:
       - "8080:80"
     environment:
       PMA_HOST: db
-      PMA_ARBITRARY: 1
     volumes: 
       - phpmyadmin-data:/sessions
+    networks:
+    - mysql-phpmyadmin
 
 volumes:
   local_mysqldata:
   phpmyadmin-data:
+
+networks:
+  mysql-phpmyadmin:
