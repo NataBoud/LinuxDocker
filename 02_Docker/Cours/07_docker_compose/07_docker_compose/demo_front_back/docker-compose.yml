@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    volumes:
+      - postgres_data:/var/lib/posgresql/data
+
+  backend:
+    depends_on:
+      - db
+    build: ./backend
+    container_name: backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mydatabase
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_USERNAME: postgres
+    ports:
+      - "8080:8080"
+
+  frontend:
+    depends_on:
+      - backend
+    build: ./frontend
+    ports:
+      - "8081:8080"
+
+volumes:
+ postgres_data:
